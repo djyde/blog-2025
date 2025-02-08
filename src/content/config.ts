@@ -14,6 +14,8 @@ const postCollection = defineCollection({
       draft: z.boolean().optional(),
       /** 发布时间（当非草稿时必须提供） */
       pubDate: z.coerce.date().optional(),
+      /** 封面 */
+      ogImage: z.string().optional(),
     })
     .refine(
       (data) => {

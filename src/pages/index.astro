@@ -4,6 +4,8 @@ import Search from '@/components/search';
 import PageLayout from '@/components/layouts/PageLayout.astro';
 // import Button from '@/components/button';
 import slateConfig from '~@/slate.config';
+import '@/assets/style/blog.scss';
+import Intro from '@/content/intro.md';
 
 const postCollection = await getCollection('post', ({ data }) => {
   return import.meta.env.DEV || data.draft !== true;
@@ -50,6 +52,20 @@ const posts = [...postCollection]
       {slateConfig.title}
     </h3>
     <p class="text-xl text-slate10">{slateConfig.description}</p>
+    <div class="flex flex-wrap gap-3 mt-5 text-base">
+      {
+        slateConfig.navigations?.map((navigation) => {
+          return (
+            <a href={navigation.href} class="flex items-center">
+              {navigation.icon && (
+                <span class="mr-1" set:html={navigation.icon} />
+              )}
+              {navigation.label}
+            </a>
+          );
+        })
+      }
+    </div>
     <Search
       client:only="react"
       className="absolute right-0 top-1/2 -translate-y-1/2"
@@ -57,6 +73,15 @@ const posts = [...postCollection]
   </section>
 
   <section class="mb-16">
+    <div class="blog-content">
+      <Intro />
+    </div>
+  </section>
+
+  <section class="mb-16">
+    <h3 class="mb-3 text-xl font-semibold leading-tight text-slate12 sm:ml-2">
+      文章
+    </h3>
     <div class="text-base text-slate12">
       {
         posts.map((item) => (
@@ -78,18 +103,20 @@ const posts = [...postCollection]
   </section>
 
   <!-- S 标签 -->
-  <section class="mb-16">
-    <ul class="flex flex-wrap gap-2 text-base text-slate10">
-      {
-        tags.map(({ name, count }) => (
-          <li class="block cursor-pointer rounded-full bg-slate3 px-4 py-2 text-slate10 transition-all hover:bg-slate4 hover:text-slate11">
-            {name}
-            <sup class="text-[10px] text-slate8">{count}</sup>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
+  {
+    slateConfig.showTags && (
+      <section class="mb-16">
+        <ul class="flex flex-wrap gap-2 text-base text-slate10">
+          {tags.map(({ name, count }) => (
+            <li class="block cursor-pointer rounded-full bg-slate3 px-4 py-2 text-slate10 transition-all hover:bg-slate4 hover:text-slate11">
+              {name}
+              <sup class="text-[10px] text-slate8">{count}</sup>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
   <!-- E 标签 -->
 </PageLayout>
 <style>

@@ -12,6 +12,8 @@ import { getFullTitle } from '@/helpers/utils';
 import 'remark-block-containers/css';
 import '@/assets/style/blog.scss';
 
+import BlogFooter from '@/content/blog-footer.md';
+
 export async function getStaticPaths() {
   const postEntries = await getCollection('post', ({ data }) => {
     return import.meta.env.DEV || data.draft !== true;
@@ -37,7 +39,7 @@ const formattedPubDate = pubDate.isSame(dayjs(), 'year')
   : pubDate.format('MMM DD, YYYY');
 ---
 
-<PageLayout title={post.data.title} description={post.data.description}>
+<PageLayout title={post.data.title} description={post.data.description} ogType='article' image={post.data.ogImage}>
   <ArticleJsonLd
     slot="json-ld"
     title={getFullTitle(post.data.title)}
@@ -71,6 +73,8 @@ const formattedPubDate = pubDate.isSame(dayjs(), 'year')
         <div class="text-black/25">编辑于 {lastModified}</div>
       )
     }
+    <hr />
+    <BlogFooter />
   </div>
   <!-- E 内容 -->
   <!-- S 目录 -->

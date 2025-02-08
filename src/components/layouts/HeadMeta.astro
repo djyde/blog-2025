@@ -3,9 +3,11 @@ interface Props {
   title: string;
   description: string;
   image: string;
+  ogType: "website" | "article";
 }
 
-const { title, description, image } = Astro.props;
+const { title, description, image, ogType } = Astro.props;
+
 ---
 
 <!-- Global Metadata -->
@@ -24,7 +26,7 @@ const { title, description, image } = Astro.props;
 <meta name="description" content={description} />
 
 <!-- Open Graph / Facebook -->
-<meta property="og:type" content="website" />
+<meta property="og:type" content={ogType} />
 <meta property="og:url" content={Astro.url} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
