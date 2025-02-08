@@ -9,5 +9,10 @@
     "astro",
     "typescript",
     "typescriptreact"
-  ]
+  ],
+  "editor.pasteAs.enabled": true,
+  "markdown.editor.filePaste.enabled": "smart",
+  "markdown.copyFiles.destination": {
+    "/src/content/post/*.md": "/images/${fileName}"
+  }
 }
