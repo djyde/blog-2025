@@ -29,7 +29,11 @@ type Props = CollectionEntry<'post'>;
 
 const post = Astro.props;
 const { Content, remarkPluginFrontmatter, headings } = await post.render();
-const lastModifiedDate = dayjs(remarkPluginFrontmatter.lastModified ? remarkPluginFrontmatter.lastModified : undefined);
+const lastModifiedDate = dayjs(
+  remarkPluginFrontmatter.lastModified
+    ? remarkPluginFrontmatter.lastModified
+    : undefined,
+);
 const lastModified = lastModifiedDate.isSame(dayjs(), 'year')
   ? lastModifiedDate.format('MMM DD')
   : lastModifiedDate.format('MMM DD, YYYY');
@@ -39,7 +43,12 @@ const formattedPubDate = pubDate.isSame(dayjs(), 'year')
   : pubDate.format('MMM DD, YYYY');
 ---
 
-<PageLayout title={post.data.title} description={post.data.description} ogType='article' image={post.data.ogImage}>
+<PageLayout
+  title={post.data.title}
+  description={post.data.description}
+  ogType="article"
+  image={post.data.ogImage}
+>
   <ArticleJsonLd
     slot="json-ld"
     title={getFullTitle(post.data.title)}
@@ -74,7 +83,9 @@ const formattedPubDate = pubDate.isSame(dayjs(), 'year')
       )
     }
     <hr />
-    <BlogFooter />
+    <div>
+      <BlogFooter />
+    </div>
   </div>
   <!-- E 内容 -->
   <!-- S 目录 -->
@@ -87,7 +98,7 @@ const formattedPubDate = pubDate.isSame(dayjs(), 'year')
   <!-- E 目录 -->
 </PageLayout>
 
-<script src="//unpkg.com/heti/umd/heti-addon.min.js" is:inline />
+<script src="//unpkg.com/heti/umd/heti-addon.min.js" is:inline></script>
 <script>
   const backBtn = document.getElementById('back');
   backBtn?.addEventListener('click', () => {
