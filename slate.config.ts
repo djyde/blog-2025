@@ -14,6 +14,12 @@ export default defineConfig({
   footer: {
     copyright: '© 2025 Randy',
   },
+  analytics: {
+    plausible: {
+      domain: 'lutaonan.com',
+      script: 'https://psb.djyde.com/js/script.js',
+    }
+  },
   navigations: [
     {
       label: "一对一咨询",
