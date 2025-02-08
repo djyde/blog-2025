@@ -4,13 +4,13 @@
 import { defineConfig } from './src/helpers/config-helper';
 
 export default defineConfig({
-  site: 'https://slate-blog-demo.vercel.app',
-  avatar: '/avatar.png',
-  title: 'Slate Blog',
-  description: 'Pure thoughts, simple stories.',
-  lastModified: true,
+  site: 'https://lutaonan.com',
+  avatar: '/avatar.jpg',
+  title: `Randy's Blog`,
+  description: 'About life, technology and reading',
+  lastModified: false,
   readTime: true,
   footer: {
-    copyright: '© 2025 Slate Blog',
+    copyright: '© 2025 Randy',
   }
 });
