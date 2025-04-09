@@ -3,7 +3,7 @@ title: 现代浏览器插件开发指南
 pubDate: 2025-04-09
 ---
 
-![](/images/wxt-book-cover.png)
+![](../../../images/wxt-book-cover.png)
 
 最近又写了一本小书。
 
