@@ -1,6 +1,6 @@
 我叫卢涛南 (Randy Lu), 1995 年出生于广东中山的一个小城市。好编程，阅读，音乐，写作以及一切创造类活动。 2008 年起学习编程至今。
 
-2014 年参加高考，录取「广州大学华软软件学院」，本科一年后退学。曾在奇志科技、阿里巴巴、蚂蚁金服、虎牙直播、微软中国工作。现在在做自己的产品（[EpubKit](https://epubkit.app/), [Notepal](https://notepal.randynamic.org)）和程序员周边品牌 [PaddingLeft](https://padding-left.com/)。
+2014 年参加高考，录取「广州大学华软软件学院」，本科一年后退学。曾在奇志科技、阿里巴巴、蚂蚁金服、虎牙直播、微软中国工作。现在在做自己的产品（[EpubKit](https://epubkit.app/), [Notepal](https://notepal.randynamic.org), [Browserfly](https://browserfly.app)）和程序员周边品牌 [PaddingLeft](https://padding-left.com/)。
 
 小时候的理想是成为一名程序员，用技术改变世界。现在的理想是用技术创造价值 —— 做出有人觉得好用的产品或服务，并愿意为之付费。未来的妄想是参与推动中国的民主化建设。如果人生可以选择，我希望我可以在一个法治国家参选议员从事政治，业余写代码和做音乐。
 
