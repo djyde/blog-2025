@@ -40,8 +40,7 @@ const posts = [...postCollection]
   .sort((a, b) => b.data.pubDate!.getTime() - a.data.pubDate!.getTime())
   .map((post) => ({
     id: post.id,
-    slug: post.slug,
-    url: `/blog/${post.slug}`,
+    url: `/blog/${post.id}`,
     data: post.data,
   }));
 ---

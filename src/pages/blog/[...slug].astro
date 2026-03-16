@@ -1,6 +1,6 @@
 ---
 import dayjs from 'dayjs';
-import { type CollectionEntry, getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
 import PageLayout from '@/components/layouts/PageLayout.astro';
 import ArticleJsonLd from '@/components/json-ld/article.astro';
 import Button from '@/components/button';
@@ -20,7 +20,7 @@ export async function getStaticPaths() {
   });
 
   return postEntries.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
     props: post,
   }));
 }
@@ -28,7 +28,7 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'post'>;
 
 const post = Astro.props;
-const { Content, remarkPluginFrontmatter, headings } = await post.render();
+const { Content, remarkPluginFrontmatter, headings } = await render(post);
 const lastModifiedDate = dayjs(
   remarkPluginFrontmatter.lastModified
     ? remarkPluginFrontmatter.lastModified
