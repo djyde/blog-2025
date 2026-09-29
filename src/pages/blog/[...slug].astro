@@ -3,14 +3,12 @@ import dayjs from 'dayjs';
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import PageLayout from '@/components/layouts/PageLayout.astro';
 import ArticleJsonLd from '@/components/json-ld/article.astro';
-import Button from '@/components/button';
 import AffixTitle from '@/components/affix-title';
 import Toc from '@/components/toc';
 import CodeGroupEvent from '@/components/code-group-event';
 import slateConfig from '~@/slate.config';
 import { getFullTitle } from '@/helpers/utils';
 import 'remark-block-containers/css';
-import '@/assets/style/blog.scss';
 
 import BlogFooter from '@/content/blog-footer.md';
 
@@ -35,12 +33,12 @@ const lastModifiedDate = dayjs(
     : undefined,
 );
 const lastModified = lastModifiedDate.isSame(dayjs(), 'year')
-  ? lastModifiedDate.format('MMM DD')
-  : lastModifiedDate.format('MMM DD, YYYY');
+  ? lastModifiedDate.format('M月D日')
+  : lastModifiedDate.format('YYYY年M月D日');
 const pubDate = dayjs(post.data.pubDate);
 const formattedPubDate = pubDate.isSame(dayjs(), 'year')
-  ? pubDate.format('MMM DD')
-  : pubDate.format('MMM DD, YYYY');
+  ? pubDate.format('M月D日')
+  : pubDate.format('YYYY年M月D日');
 ---
 
 <PageLayout
@@ -59,52 +57,38 @@ const formattedPubDate = pubDate.isSame(dayjs(), 'year')
   <CodeGroupEvent client:only="react" />
   <AffixTitle title={post.data.title} offsetTop={100} client:only="react" />
 
-  <div class="mb-16" slot="header">
-    <Button id="back">←</Button>
-  </div>
-
-  <div class="blog-content">
-    <div class="mb-16">
-      <h1>{post.data.title}</h1>
-      <div class="flex items-center gap-2 text-black/25">
-        <span>{formattedPubDate}</span>
-        {!!slateConfig.readTime && <span>·</span>}
-        {
-          slateConfig.readTime && (
-            <div>{remarkPluginFrontmatter.minutesRead}</div>
-          )
-        }
+  <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_200px] lg:gap-12 lg:-mr-56">
+    <article class="w-full">
+      <div class="mb-10 pt-8">
+        <h1 class="text-3xl font-semibold leading-tight md:text-4xl">{post.data.title}</h1>
+        <div class="mt-3 flex items-center gap-2 text-sm text-olive-10">
+          <span>{formattedPubDate}</span>
+          {!!slateConfig.readTime && <span>·</span>}
+          {slateConfig.readTime && <span>{remarkPluginFrontmatter.minutesRead}</span>}
+        </div>
       </div>
-    </div>
-    <Content />
-    {
-      slateConfig.lastModified && (
-        <div class="text-black/25">编辑于 {lastModified}</div>
-      )
-    }
-    <hr />
-    <div>
-      <BlogFooter />
-    </div>
+      <div class="prose-blog blog-content">
+        <Content />
+        {slateConfig.lastModified && <div class="text-olive-10">编辑于 {lastModified}</div>}
+        <hr />
+        <div class="sponsor">
+          <BlogFooter />
+        </div>
+      </div>
+    </article>
+    <!-- S 目录 -->
+    <Toc
+      className="sticky top-16 hidden max-h-[calc(100dvh-8rem)] self-start text-sm lg:block"
+      listClassName="pb-14"
+      dataSource={headings}
+      client:visible
+    />
+    <!-- E 目录 -->
   </div>
-  <!-- E 内容 -->
-  <!-- S 目录 -->
-  <Toc
-    className="fixed bottom-0 right-0 top-0 hidden w-64 xl:block"
-    listClassName="px-5 pt-44 pb-14 "
-    dataSource={headings}
-    client:visible
-  />
-  <!-- E 目录 -->
 </PageLayout>
 
 <script src="//unpkg.com/heti/umd/heti-addon.min.js" is:inline></script>
 <script>
-  const backBtn = document.getElementById('back');
-  backBtn?.addEventListener('click', () => {
-    window.location.href = '/';
-  });
-
   const heti = new Heti('.blog-content');
   heti.autoSpacing();
 </script>

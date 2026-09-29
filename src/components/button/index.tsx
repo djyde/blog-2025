@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import classNames from 'classnames';
-import './index.scss';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const ButtonTypes = ['default', 'link'] as const;
@@ -45,11 +44,10 @@ const Button = (props: ButtonProps) => {
   } = props;
 
   const classes = classNames(
-    'sb-button',
+    'pill',
     {
-      block: block,
-      'inline-block': !block,
-      [`sb-button-${type}`]: type,
+      'flex w-full justify-center': block,
+      [`pill-${type}`]: type,
     },
     className,
   );

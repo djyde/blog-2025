@@ -1,11 +1,11 @@
 ---
 import HeadMeta from './HeadMeta.astro';
 import Header from './Header.astro';
-import Footer from './Footer';
+import Footer from './Footer.astro';
 import NormalJsonLd from '@/components/json-ld/normal.astro';
 import slateConfig from '~@/slate.config';
 import { getFullTitle } from '@/helpers/utils';
-import '@/assets/style/common.css';
+import '@/assets/style/global.css';
 
 interface Props {
   title?: string;
@@ -35,14 +35,14 @@ const fullTitle = getFullTitle(title);
       <script defer data-domain={slateConfig.analytics.plausible.domain} src={slateConfig.analytics.plausible.script} />
     )}
   </head>
-  <body class="bg-slate1">
-    <div class="m-auto flex min-h-dvh max-w-180 flex-col px-6 pb-6 pt-18">
+  <body class="bg-olive-2 text-olive-12">
+    <div class="mx-auto flex min-h-dvh max-w-3xl flex-col px-6 pb-6">
       <slot name="header">
         <Header />
       </slot>
       <slot />
       <slot name="footer">
-        <Footer client:visible />
+        <Footer />
       </slot>
     </div>
   </body>

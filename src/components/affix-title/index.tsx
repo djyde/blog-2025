@@ -13,7 +13,7 @@ const AffixTitle = (props: AffixTitleProps) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const classes = classNames(
-    'fixed left-0 right-0 top-0 w-full transform bg-slate1/90 backdrop-blur-md transition-all duration-300 ease-in-out',
+    'fixed left-0 right-0 top-0 w-full transform bg-olive-2/90 backdrop-blur-md transition-all duration-300 ease-in-out',
     isVisible ? ['translate-y-0', 'opacity-100'] : ['-translate-y-full', 'opacity-0'],
   );
 
@@ -36,7 +36,7 @@ const AffixTitle = (props: AffixTitleProps) => {
       ref={affixTitleRef}
       className={classes}
     >
-      <div className="py-4 text-center font-bold">{title}</div>
+      <div className="py-4 text-center font-medium">{title}</div>
     </div>
   );
 };

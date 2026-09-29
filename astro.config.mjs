@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
-import tailwind from '@astrojs/tailwind';
+import tailwindcss from '@tailwindcss/vite';
 import svgr from 'vite-plugin-svgr';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
@@ -17,7 +17,7 @@ import { remarkReadingTime } from './plugins/remark-reading-time';
 import slateConfig from './slate.config';
 
 function computedIntegrations() {
-  const result = [astroExpressiveCode(), mdx(), react(), tailwind(), sitemap(slateConfig.sitemap)];
+  const result = [astroExpressiveCode(), mdx(), react(), sitemap(slateConfig.sitemap)];
 
   return result;
 }
@@ -39,6 +39,7 @@ function generateAstroConfigure() {
     vite: {
       plugins: [
         svgr(),
+        tailwindcss(),
       ],
     },
   };
