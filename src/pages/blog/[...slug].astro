@@ -1,6 +1,7 @@
 ---
 import dayjs from 'dayjs';
 import { type CollectionEntry, getCollection, render } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
 import PageLayout from '@/components/layouts/PageLayout.astro';
 import ArticleJsonLd from '@/components/json-ld/article.astro';
 import AffixTitle from '@/components/affix-title';
@@ -8,6 +9,7 @@ import Toc from '@/components/toc';
 import CodeGroupEvent from '@/components/code-group-event';
 import slateConfig from '~@/slate.config';
 import { getFullTitle } from '@/helpers/utils';
+import { getCover } from '@/helpers/cover';
 import 'remark-block-containers/css';
 
 import BlogFooter from '@/content/blog-footer.md';
@@ -39,13 +41,18 @@ const pubDate = dayjs(post.data.pubDate);
 const formattedPubDate = pubDate.isSame(dayjs(), 'year')
   ? pubDate.format('M月D日')
   : pubDate.format('YYYY年M月D日');
+
+const cover = getCover(post.id);
+// 没有手动指定 ogImage 时，用配图做分享图
+const ogImage =
+  post.data.ogImage ?? (cover ? (await getImage({ src: cover, width: 1200, format: 'jpg' })).src : undefined);
 ---
 
 <PageLayout
   title={post.data.title}
   description={post.data.description}
   ogType="article"
-  image={post.data.ogImage}
+  image={ogImage}
 >
   <ArticleJsonLd
     slot="json-ld"
@@ -59,7 +66,19 @@ const formattedPubDate = pubDate.isSame(dayjs(), 'year')
 
   <div class="lg:grid lg:grid-cols-[minmax(0,1fr)_200px] lg:gap-12 lg:-mr-56">
     <article class="w-full">
-      <div class="mb-10 pt-8">
+      {
+        cover && (
+          <Image
+            src={cover}
+            alt=""
+            widths={[720, 1440]}
+            sizes="(min-width: 768px) 720px, 100vw"
+            class="riso-fade -mx-6 mt-2 aspect-[16/9] w-[calc(100%+3rem)] max-w-none object-cover sm:mx-0 sm:w-full"
+            loading="eager"
+          />
+        )
+      }
+      <div class:list={['mb-10', cover ? 'pt-2' : 'pt-8']}>
         <h1 class="text-3xl font-semibold leading-tight md:text-4xl">{post.data.title}</h1>
         <div class="mt-3 flex items-center gap-2 text-sm text-olive-10">
           <span>{formattedPubDate}</span>
@@ -78,8 +97,8 @@ const formattedPubDate = pubDate.isSame(dayjs(), 'year')
     </article>
     <!-- S 目录 -->
     <Toc
-      className="sticky top-16 hidden max-h-[calc(100dvh-8rem)] self-start text-sm lg:block"
-      listClassName="pb-14"
+      className="sticky top-24 hidden self-start lg:block"
+      listClassName="max-h-[calc(100dvh-10rem)]"
       dataSource={headings}
       client:visible
     />

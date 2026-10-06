@@ -1,0 +1,5 @@
+# 生成原图和日志不入库；b2-lamp-1.jpg 是 gen-post.sh 的风格参考图，需要保留
+*.log
+*-1.jpg
+!b2-lamp-1.jpg
+posts/

@@ -1,21 +1,27 @@
 @import 'tailwindcss';
-@import '@radix-ui/colors/olive.css';
 @import '@radix-ui/colors/blue.css';
 @import '@radix-ui/colors/amber.css';
 
-@theme inline {
-  --color-olive-1: var(--olive-1);
-  --color-olive-2: var(--olive-2);
-  --color-olive-3: var(--olive-3);
-  --color-olive-4: var(--olive-4);
-  --color-olive-5: var(--olive-5);
-  --color-olive-6: var(--olive-6);
-  --color-olive-7: var(--olive-7);
-  --color-olive-8: var(--olive-8);
-  --color-olive-9: var(--olive-9);
-  --color-olive-10: var(--olive-10);
-  --color-olive-11: var(--olive-11);
-  --color-olive-12: var(--olive-12);
+/*
+ * Riso「晨间台灯」色板：奶油纸 + 暖墨。沿用 olive-* 的命名，组件无需改动。
+ * olive-2 必须与 src/assets/covers 配图的纸色一致（#f9f3de），配图才能“印”在页面上。
+ */
+@theme {
+  --color-olive-1: #fdf9ee;
+  --color-olive-2: #f9f3de;
+  --color-olive-3: #f3ebd2;
+  --color-olive-4: #ede3c7;
+  --color-olive-5: #e6dbbd;
+  --color-olive-6: #ddd0b0;
+  --color-olive-7: #d0c2a0;
+  --color-olive-8: #bcae8f;
+  --color-olive-9: #9a9184;
+  --color-olive-10: #857c70;
+  --color-olive-11: #6d665c;
+  --color-olive-12: #2b2620;
+  /* 锈红：少量点缀；灯光橙：全站唯一高亮，只用在最新文章和正文链接 */
+  --color-rust: #b0583a;
+  --color-lamp: #f08a3c;
   --font-sans: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 }
 
@@ -24,10 +30,22 @@
     background: var(--color-olive-2);
     color: var(--color-olive-12);
     scroll-behavior: smooth;
+    /* 全宽区块用 100vw 撑开，裁掉滚动条宽度带来的横向溢出 */
+    overflow-x: clip;
   }
   body {
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+  /* 纸纹颗粒 */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.09;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
   ::selection {
     background: var(--color-olive-12);
@@ -105,12 +123,12 @@
   a {
     color: var(--color-olive-12);
     text-decoration: underline;
-    text-decoration-color: var(--color-olive-8);
+    text-decoration-color: color-mix(in srgb, var(--color-lamp) 65%, transparent);
     text-underline-offset: 4px;
     transition: text-decoration-color 0.2s;
   }
   a:hover {
-    text-decoration-color: var(--color-olive-12);
+    text-decoration-color: var(--color-lamp);
   }
 
   strong {
@@ -302,4 +320,9 @@
 }
 .sponsor figcaption {
   display: none;
+}
+
+/* 配图边缘渐隐进纸色，避免每张图纸色的细微差异露出方框 */
+.riso-fade {
+  mask-image: radial-gradient(ellipse 72% 72% at 50% 50%, #000 62%, transparent 100%);
 }

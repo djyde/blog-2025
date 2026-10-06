@@ -2,15 +2,22 @@
 import slateConfig from '~@/slate.config';
 
 const links = [
-  { label: 'Writing', href: '/#writing' },
+  // 手机上首页往下就是文章列表，省掉这个入口避免导航换行
+  { label: 'Writing', href: '/#writing', hideOnMobile: true },
   { label: 'About', href: '/#about' },
   ...(slateConfig.navigations ?? []).map(({ label, href }) => ({ label, href })),
 ];
 ---
 
-<header class="flex items-center justify-between py-6">
-  <a href="/" class="font-medium">Randy Lu</a>
-  <nav class="flex gap-5 text-sm text-olive-11">
-    {links.map((link) => <a href={link.href} class="hover:text-olive-12">{link.label}</a>)}
+<header class="flex items-center justify-between gap-4 py-6">
+  <a href="/" class="shrink-0 whitespace-nowrap font-medium">Randy Lu</a>
+  <nav class="flex gap-3.5 whitespace-nowrap text-sm text-olive-11 sm:gap-5">
+    {
+      links.map((link) => (
+        <a href={link.href} class:list={['hover:text-olive-12', 'hideOnMobile' in link && 'hidden sm:inline']}>
+          {link.label}
+        </a>
+      ))
+    }
   </nav>
 </header>

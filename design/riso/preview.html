@@ -1,0 +1,610 @@
+<title>Riso 博客改版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Mono:wght@400;500&family=Jost:wght@400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap">
+<style>
+/* Layout: 一列提案，每个提案 = 说明 + 首页模型 + 文章页模型。外壳随主题，模型保持各自的印刷纸色 */
+:root {
+  --bg: #f3f1ec; --fg: #1d1c1a; --muted: #6b6760; --line: #d9d5cc; --panel: #fbfaf7;
+  --display: 'Jost', 'PingFang SC', system-ui, sans-serif;
+  --body: system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #161513; --fg: #ece8df; --muted: #9a958b; --line: #2e2c28; --panel: #1e1d1a; color-scheme: dark } }
+:root[data-theme="dark"] { --bg: #161513; --fg: #ece8df; --muted: #9a958b; --line: #2e2c28; --panel: #1e1d1a; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 15px; line-height: 1.7; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 48px 96px; }
+header.top { display: grid; gap: 12px; max-width: 720px; margin-bottom: 56px; }
+header.top h1 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 5vw, 46px); line-height: 1.15; margin: 0; text-wrap: balance; }
+header.top p { margin: 0; color: var(--muted); }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+.proposal { border-top: 1px solid var(--line); padding-block: 48px; display: grid; gap: 28px; }
+.p-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 32px; align-items: start; }
+.p-head h2 { font-family: var(--display); font-size: 30px; line-height: 1.2; margin: 6px 0 10px; font-weight: 700; }
+.p-head p { margin: 0 0 10px; }
+.swatches { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.sw { display: grid; gap: 4px; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.sw i { display: block; width: 52px; height: 36px; border-radius: 2px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+.sw.hl i { outline: 2px dashed var(--fg); outline-offset: 2px; }
+dl.specs { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 16px; margin: 0; font-size: 14px; }
+dl.specs dt { font-family: var(--mono); font-size: 12px; color: var(--muted); padding-top: 2px; }
+dl.specs dd { margin: 0; }
+.mocks { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.frame { border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px var(--line), 0 12px 40px -18px rgba(0,0,0,.35); }
+.frame .bar { height: 26px; background: var(--panel); display: flex; align-items: center; gap: 6px; padding-inline: 10px; border-bottom: 1px solid var(--line); }
+.frame .bar i { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.frame .bar span { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-left: 8px; }
+.cap { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 8px; }
+.screen { position: relative; isolation: isolate; }
+.screen::after { content: ''; position: absolute; inset: 0; background: var(--grain); mix-blend-mode: multiply; opacity: .32; pointer-events: none; z-index: 5; }
+.screen img { display: block; width: 100%; }
+
+/* ---------- A · 油墨小报 ---------- */
+.A { --paper: #f6ecd8; --blue: #2f7fc1; --pink: #ff3d9a; --ink: #222; background: var(--paper); color: var(--ink); padding: 28px 30px 34px; }
+.A nav { display: flex; justify-content: space-between; font-family: 'Archivo Black', sans-serif; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+.A nav span + span { margin-left: 14px; }
+.A .mast { font-family: 'Archivo Black', sans-serif; font-size: clamp(40px, 8vw, 84px); line-height: .9; margin: 22px 0 6px; color: var(--blue); text-shadow: 3px 2px 0 var(--pink); mix-blend-mode: multiply; letter-spacing: -.01em; }
+.A .tag { font-size: 14px; max-width: 30em; }
+.A .hero { margin: 18px -30px; }
+.A .hero img { mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent); }
+.A .yr { display: inline-block; font-family: 'Archivo Black', sans-serif; background: var(--blue); color: var(--paper); padding: 0 8px; font-size: 13px; box-shadow: 2px 2px 0 var(--pink); margin: 14px 0 6px; }
+.A ul { list-style: none; margin: 0; padding: 0; }
+.A li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 2px dotted rgba(47,127,193,.45); font-size: 14px; }
+.A li time { font-family: var(--mono); font-size: 12px; color: var(--blue); white-space: nowrap; }
+.A li:first-child b { background: linear-gradient(transparent 55%, rgba(255,61,154,.55) 55%); font-weight: 600; }
+.A.post h3 { font-family: 'Noto Serif SC', serif; font-size: 26px; line-height: 1.3; margin: 8px 0 4px; color: var(--ink); text-shadow: 2px 1px 0 rgba(255,61,154,.7); }
+.A.post .meta { font-family: var(--mono); font-size: 11px; color: var(--blue); }
+.A.post p { font-size: 13.5px; line-height: 1.9; margin: 12px 0 0; }
+.A.post blockquote { margin: 14px 0 0; padding: 10px 14px; background: rgba(47,127,193,.16); border-left: 6px solid var(--pink); font-size: 13px; }
+
+/* ---------- B · 深夜台灯 ---------- */
+.B { --night: #15161a; --cream: #efe6d2; --rust: #a4462b; --grey: #8f877a; --lamp: #ff8a3d; background: var(--night); color: var(--cream); padding: 28px 30px 34px; font-family: 'Noto Serif SC', serif; }
+.B .screen-in { position: relative; }
+.B nav { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--grey); letter-spacing: .06em; }
+.B .hero { margin: 20px 0 0; position: relative; }
+.B .hero img { mask-image: radial-gradient(ellipse 70% 75% at 55% 50%, #000 55%, transparent 100%); }
+.B h1 { font-size: 30px; margin: -18px 0 4px; font-weight: 700; position: relative; }
+.B .tag { color: var(--grey); font-size: 14px; }
+.B .lbl { font-family: var(--mono); font-size: 11px; color: var(--rust); letter-spacing: .1em; margin: 24px 0 8px; }
+.B ul { list-style: none; margin: 0; padding: 0; }
+.B li { display: grid; grid-template-columns: 74px minmax(0, 1fr); gap: 12px; padding: 8px 0; border-top: 1px solid rgba(239,230,210,.12); font-size: 14px; }
+.B li time { font-family: var(--mono); font-size: 11px; color: var(--grey); padding-top: 3px; }
+.B li:first-child b { color: var(--lamp); font-weight: 400; }
+.B li:first-child time { color: var(--lamp); }
+.B.post { padding-top: 22px; }
+.B.post .lit { height: 120px; background: radial-gradient(ellipse 60% 100% at 50% 0, rgba(255,138,61,.35), transparent 70%); margin: -22px -30px 0; }
+.B.post h3 { font-size: 24px; margin: -70px 0 4px; line-height: 1.35; }
+.B.post .meta { font-family: var(--mono); font-size: 11px; color: var(--grey); }
+.B.post p { font-size: 13.5px; line-height: 2; margin: 14px 0 0; color: #ddd3bf; }
+.B.post p::first-letter { color: var(--lamp); }
+.B.post code { font-family: var(--mono); background: rgba(164,70,43,.3); padding: 1px 5px; font-size: 12px; }
+.B .screen::after, .screen.B::after { mix-blend-mode: screen; opacity: .1; filter: invert(1); }
+
+/* ---------- C · 包豪斯书架 ---------- */
+.C { --off: #f0ede6; --mustard: #d6a531; --teal: #79b8ab; --navy: #1d2257; background: var(--off); color: var(--navy); padding: 26px 30px 34px; font-family: 'Jost', 'PingFang SC', sans-serif; }
+.C nav { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 500; }
+.C nav .logo { display: flex; gap: 3px; align-items: center; }
+.C nav .logo i { width: 14px; height: 14px; display: block; }
+.C .top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: center; margin-top: 18px; }
+.C h1 { font-size: 44px; line-height: 1; margin: 0; font-weight: 700; letter-spacing: -.01em; }
+.C .tag { font-size: 14px; margin-top: 10px; color: #4a4e78; }
+.C .yearbar { display: flex; gap: 4px; margin: 22px 0 14px; }
+.C .yearbar span { flex: 1; font-size: 11px; font-weight: 700; padding: 3px 6px; color: var(--off); }
+.C .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.C .card svg { display: block; width: 100%; aspect-ratio: 4/3; }
+.C .card b { display: block; font-size: 13px; font-weight: 500; margin-top: 6px; line-height: 1.4; }
+.C .card time { font-size: 11px; color: #4a4e78; }
+.C.post .cover svg { display: block; width: calc(100% + 60px); margin: -26px -30px 0; aspect-ratio: 16/8; }
+.C.post h3 { font-size: 24px; margin: 16px 0 2px; line-height: 1.3; font-weight: 700; }
+.C.post .meta { font-size: 12px; color: #4a4e78; display: flex; gap: 8px; align-items: center; }
+.C.post .meta i { width: 8px; height: 8px; border-radius: 50%; background: var(--mustard); display: inline-block; }
+.C.post p { font-size: 13.5px; line-height: 1.95; margin: 12px 0 0; color: #23284f; font-family: system-ui, 'PingFang SC', sans-serif; }
+.C.post h4 { font-size: 15px; margin: 16px 0 0; display: flex; gap: 8px; align-items: center; }
+.C.post h4::before { content: ''; width: 18px; height: 8px; background: var(--teal); }
+
+/* ---------- 第二轮：轻量版 ---------- */
+.round { display: flex; align-items: baseline; gap: 12px; margin: 8px 0 0; padding-top: 40px; border-top: 2px solid var(--fg); }
+.round h2 { font-family: var(--display); font-size: 24px; margin: 0; }
+.round p { margin: 0; color: var(--muted); }
+.screen.lite::after { opacity: .16; }
+
+.B2 { --paper: #f8f3e7; --ink: #2b2620; --rust: #b0583a; --grey: #968d80; --lamp: #f08a3c; background: var(--paper); color: var(--ink); padding: 26px 34px 36px; }
+.B2 nav { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 11px; color: var(--grey); letter-spacing: .05em; }
+.B2 .top { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; align-items: center; margin-top: 18px; }
+.B2 h1 { font-family: 'Noto Serif SC', serif; font-size: 26px; font-weight: 700; margin: 0; }
+.B2 .tag { color: #6d665c; font-size: 13.5px; margin-top: 6px; font-family: 'Noto Serif SC', serif; }
+.B2 .top img { mask-image: radial-gradient(ellipse 60% 70% at 62% 55%, #000 50%, transparent 100%); }
+.B2 .lbl { font-family: var(--mono); font-size: 11px; color: var(--grey); margin: 18px 0 6px; }
+.B2 ul { list-style: none; margin: 0; padding: 0; font-family: 'Noto Serif SC', serif; }
+.B2 li { display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: 10px; padding: 7px 0; font-size: 14px; border-top: 1px solid #ece4d3; }
+.B2 li time { font-family: var(--mono); font-size: 11px; color: var(--grey); padding-top: 3px; }
+.B2 li:first-child span { position: relative; }
+.B2 li:first-child span::before { content: ''; position: absolute; left: -14px; top: .55em; width: 6px; height: 6px; border-radius: 50%; background: var(--lamp); box-shadow: 1px 1px 0 var(--rust); }
+.B2.post .meta { font-family: var(--mono); font-size: 11px; color: var(--grey); }
+.B2.post h3 { font-family: 'Noto Serif SC', serif; font-size: 23px; line-height: 1.4; margin: 6px 0 0; }
+.B2.post .rule { width: 32px; height: 3px; background: var(--rust); margin: 14px 0 4px; box-shadow: 1.5px 1px 0 rgba(240,138,60,.6); }
+.B2.post p { font-family: 'Noto Serif SC', serif; font-size: 13.5px; line-height: 2; margin: 12px 0 0; }
+.B2.post a { color: inherit; text-decoration: underline; text-decoration-color: var(--lamp); text-underline-offset: 4px; }
+
+.C2 { --off: #f5f3ee; --mustard: #e3bf62; --teal: #9fcbc1; --navy: #232a5c; background: var(--off); color: var(--navy); padding: 26px 34px 36px; font-family: 'Jost', 'PingFang SC', sans-serif; }
+.C2 nav { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+.C2 nav .dots { display: flex; gap: 4px; align-items: center; font-weight: 500; }
+.C2 nav .dots i { width: 9px; height: 9px; display: block; }
+.C2 .top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 12px; align-items: center; margin-top: 14px; }
+.C2 h1 { font-size: 34px; font-weight: 500; margin: 0; letter-spacing: -.01em; line-height: 1.05; }
+.C2 .tag { font-size: 13.5px; color: #5a5f86; margin-top: 8px; }
+.C2 .top img { mask-image: radial-gradient(ellipse 50% 55% at 50% 52%, #000 60%, transparent 100%); }
+.C2 .yr { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; margin: 18px 0 4px; color: #5a5f86; }
+.C2 .yr::before { content: ''; width: 16px; height: 4px; background: var(--mustard); }
+.C2 .yr.t::before { background: var(--teal); }
+.C2 ul { list-style: none; margin: 0; padding: 0; }
+.C2 li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 5px 0; font-size: 14px; }
+.C2 li svg { display: block; width: 34px; height: 26px; border-radius: 2px; }
+.C2 li time { font-size: 11px; color: #8a8daa; font-variant-numeric: tabular-nums; }
+.C2.post .mark svg { display: block; width: 72px; height: 54px; }
+.C2.post h3 { font-size: 23px; font-weight: 500; margin: 14px 0 2px; line-height: 1.35; }
+.C2.post .meta { font-size: 12px; color: #8a8daa; }
+.C2.post p { font-size: 13.5px; line-height: 1.95; margin: 12px 0 0; color: #2c3260; font-family: system-ui, 'PingFang SC', sans-serif; }
+.C2.post h4 { font-size: 15px; font-weight: 500; margin: 16px 0 0; display: flex; gap: 8px; align-items: center; }
+.C2.post h4::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--mustard); box-shadow: 1px .5px 0 var(--teal); }
+@media (max-width: 820px) { .B2 .top, .C2 .top { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 480px) { .B2, .C2 { padding-inline: 18px; } }
+
+/* ---------- 第三轮：B′ 平铺 ---------- */
+.T { --paper: #f9f3de; --ink: #2b2620; --soft: #6d665c; --grey: #9a9184; --rust: #b0583a; --lamp: #f08a3c; --rule: #ece3cc;
+  background: var(--paper); color: var(--ink); padding: 24px 32px 36px; font-family: system-ui, -apple-system, 'PingFang SC', 'Hiragino Sans GB', sans-serif; }
+.T nav { display: flex; justify-content: space-between; font-size: 13px; color: var(--soft); }
+.T nav b { color: var(--ink); font-weight: 600; }
+.T nav span span { margin-left: 16px; }
+.T .intro { margin: 34px 0 30px; max-width: 30em; }
+.T .intro h1 { font-size: 24px; font-weight: 600; margin: 0; letter-spacing: -.01em; }
+.T .intro p { margin: 6px 0 0; color: var(--soft); font-size: 14px; }
+.T .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 26px 22px; }
+.T .tile img { display: block; width: 100%; aspect-ratio: 4/3; object-fit: cover; transition: transform .4s ease; }
+.T .tile:hover img { transform: translate(-1px, -2px); }
+.T .tile b { display: block; font-size: 14px; font-weight: 500; line-height: 1.45; margin-top: 4px; text-wrap: balance; }
+.T .tile time { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--grey); margin-top: 3px; font-variant-numeric: tabular-nums; }
+.T .tile.new time::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--lamp); box-shadow: 1px 1px 0 var(--rust); }
+.T.post { padding-top: 18px; }
+.T.post .head img { display: block; width: calc(100% + 64px); margin: 0 -32px; aspect-ratio: 16/9; object-fit: cover; object-position: 50% 45%; }
+.T.post .meta { font-size: 12px; color: var(--grey); font-variant-numeric: tabular-nums; }
+.T.post h3 { font-size: 22px; font-weight: 600; line-height: 1.4; margin: 4px 0 0; text-wrap: balance; }
+.T.post p { font-size: 14px; line-height: 1.95; margin: 14px 0 0; }
+.T.post a { color: inherit; text-decoration: underline; text-decoration-color: var(--lamp); text-underline-offset: 4px; }
+.mocks.wide { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+@media (max-width: 820px) { .mocks.wide { grid-template-columns: minmax(0, 1fr); } .T .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .T { padding-inline: 18px; } .T.post .head img { width: calc(100% + 36px); margin: 0 -18px; } }
+
+/* 通用手法 & 推荐 */
+.tech { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 8px; }
+.tech div { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 16px 18px; }
+.tech h3 { font-size: 15px; margin: 0 0 6px; }
+.tech p { margin: 0; font-size: 14px; color: var(--muted); }
+.tech code { font-family: var(--mono); font-size: 12px; color: var(--fg); }
+.rec { margin-top: 40px; padding: 22px 24px; border-left: 4px solid #d6a531; background: var(--panel); }
+.rec h3 { margin: 0 0 6px; font-family: var(--display); font-size: 20px; }
+.rec p { margin: 0 0 8px; }
+
+@media (max-width: 820px) {
+  .p-head, .mocks { grid-template-columns: minmax(0, 1fr); }
+  .C .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .C .top { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 480px) { .A, .B, .C { padding-inline: 18px; } .A .hero { margin-inline: -18px; } .C.post .cover svg { width: calc(100% + 36px); margin-inline: -18px; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="eyebrow">lutaonan.com · redesign</div>
+    <h1>把博客印成一份 Risograph 出版物</h1>
+    <p>三个方案共用同一套印刷语言：平涂几何形状、3–4 种专色、纸纹颗粒、轻微套色偏移。区别在纸色、阅读气质，以及插图怎么覆盖 64 篇文章。插图都由 LaoZhang（gemini-3.1-flash-image）按你的 riso 风格生成，模型里的文字和文章列表都是博客的真实内容。</p>
+  </header>
+
+  <div class="round" style="border-top:none;padding-top:0"><h2>第三轮 · B′ 平铺</h2><p>每篇文章一张配图，系统字体</p></div>
+
+  <section class="proposal" id="tiles">
+    <div class="p-head">
+      <div>
+        <div class="eyebrow">定稿方向</div>
+        <h2>晨间台灯 · 平铺</h2>
+        <p>首页的文章列表改成三列平铺，每篇文章配一张极简 riso 小图，图里画的东西取自文章内容。图的纸色就是页面底色，所以每张图看起来像直接印在页面上，没有卡片边框。字体全部用系统字体。</p>
+      </div>
+      <dl class="specs">
+        <dt>高考随想</dt><dd>窗户里吹出一条窗帘，对应“自由的风”</dd>
+        <dt>让 AI 戴着镣铐跳舞</dt><dd>立起的胶囊被一串小圆链拴在一块重物上</dd>
+        <dt>GLM × Claude Code</dt><dd>插头正要插进插座</dd>
+        <dt>浏览器插件指南</dt><dd>浏览器窗口，右上角嵌着一块小方块</dd>
+        <dt>高估了智力</dt><dd>跷跷板：大而淡的圆被小而实的圆压起</dd>
+        <dt>2024 年终</dt><dd>层叠的浪，中间漂着一颗浮标</dd>
+      </dl>
+    </div>
+    <div class="mocks wide">
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>lutaonan.com</span></div>
+          <div class="screen lite T">
+            <nav><b>Randy Lu</b><span><span>Writing</span><span>About</span><span>RSS</span></span></nav>
+            <div class="intro"><h1>Randy Lu</h1><p>Product Engineer，写作者。记录关于生活、技术与阅读的思考。</p></div>
+            <div class="tiles">
+              <a class="tile new"><img src="posts/gaokao.jpg" alt="窗户吹出窗帘"><b>高考随想</b><time>2026.06.10</time></a>
+              <a class="tile"><img src="posts/ai-coding-principle.jpg" alt="被链子拴住的胶囊"><b>让 AI 戴着镣铐跳舞</b><time>2025.12.27</time></a>
+              <a class="tile"><img src="posts/glm-with-claude-code.jpg" alt="插头和插座"><b>在 Claude Code 中使用 GLM 4.6 的体验</b><time>2025.10.08</time></a>
+              <a class="tile"><img src="posts/browser-extension-development-guide.jpg" alt="浏览器窗口和插件块"><b>现代浏览器插件开发指南</b><time>2025.04.09</time></a>
+              <a class="tile"><img src="posts/oi.jpg" alt="跷跷板"><b>我们高估了智力的重要性</b><time>2025.04.01</time></a>
+              <a class="tile"><img src="posts/2024-summary.jpg" alt="浪和浮标"><b>2024: 在夜海中观望浪潮</b><time>2024.12.28</time></a>
+            </div>
+          </div>
+        </div>
+        <div class="cap">首页 · 最新一篇日期前有一颗灯光橙圆点</div>
+      </div>
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>/blog/oi</span></div>
+          <div class="screen lite T post">
+            <div class="head"><img src="posts/oi.jpg" alt="跷跷板"></div>
+            <div class="meta">2025.04.01 · 6 分钟</div>
+            <h3>我们高估了智力的重要性</h3>
+            <p>在 AI 越来越强大的这段时间里，我思考得比较多的一个问题是，我们是否高估了智力的重要性。</p>
+            <p>引起这个思考的原因有很多，一是<a>大语言模型</a>的进化程度……</p>
+          </div>
+        </div>
+        <div class="cap">文章页 · 配图做题图</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="round"><h2>第二轮 · 轻量版</h2><p>基于 B 和 C</p></div>
+
+  <!-- B2 -->
+  <section class="proposal" id="b2">
+    <div class="p-head">
+      <div>
+        <div class="eyebrow">方案 B′</div>
+        <h2>晨间台灯</h2>
+        <p>B 的配色翻到奶油纸上：不再用整片深底，台灯缩成一盏淡淡的小灯，放在标题旁边。油墨只剩锈红和暖灰两种，灯光橙只用作最新文章前的小圆点和文章里的链接下划线。</p>
+        <div class="swatches">
+          <div class="sw"><i style="background:#f8f3e7"></i>纸</div>
+          <div class="sw"><i style="background:#2b2620"></i>墨</div>
+          <div class="sw"><i style="background:#b0583a"></i>锈红</div>
+          <div class="sw"><i style="background:#968d80"></i>暖灰</div>
+          <div class="sw hl"><i style="background:#f08a3c"></i>灯光</div>
+        </div>
+      </div>
+      <dl class="specs">
+        <dt>比 B 轻在哪</dt><dd>深底改为纸色；插图墨量不到画面 15%，不再撑满整张；文章页去掉光晕，只留一根锈红短线</dd>
+        <dt>字体</dt><dd>思源宋体做标题和正文，IBM Plex Mono 做日期</dd>
+        <dt>暗色模式</dt><dd>就用第一轮的 B：夜里自动“关灯”变深底，白天是这版</dd>
+      </dl>
+    </div>
+    <div class="mocks">
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>lutaonan.com</span></div>
+          <div class="screen lite B2">
+            <nav><span>RANDY LU</span><span>WRITING · ABOUT · RSS</span></nav>
+            <div class="top">
+              <div><h1>Randy Lu</h1><div class="tag">Product Engineer，写作者。<br>记录关于生活、技术与阅读的思考。</div></div>
+              <img src="b2-lamp.jpg" alt="一盏小台灯照着一张纸">
+            </div>
+            <div class="lbl">Writing · 64</div>
+            <ul>
+              <li><time>2026.06.10</time><span>高考随想</span></li>
+              <li><time>2025.12.27</time><span>让 AI 戴着镣铐跳舞</span></li>
+              <li><time>2025.10.08</time><span>在 Claude Code 中使用 GLM 4.6 的体验</span></li>
+              <li><time>2025.04.09</time><span>现代浏览器插件开发指南</span></li>
+              <li><time>2024.12.28</time><span>2024: 在夜海中观望浪潮</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="cap">首页</div>
+      </div>
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>/blog/glm-with-claude-code</span></div>
+          <div class="screen lite B2 post">
+            <div class="meta">2025.10.08 · 5 MIN READ</div>
+            <h3>在 Claude Code 中使用 GLM 4.6 的体验</h3>
+            <div class="rule"></div>
+            <p>最近把 Claude Code 接到了 <a>GLM 4.6</a> 上，用了两周，记录一下真实的感受。</p>
+            <p>先说结论：日常的小改动够用，大的重构还是会换回去。</p>
+          </div>
+        </div>
+        <div class="cap">文章页（正文为示意）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C2 -->
+  <section class="proposal" id="c2">
+    <div class="p-head">
+      <div>
+        <div class="eyebrow">方案 C′</div>
+        <h2>包豪斯便签</h2>
+        <p>C 的程序化封面缩成列表前的一枚小印章，颜色调淡，每枚只有一到两个形状。首页从“书架网格”变回一条安静的文章列表，主图也缩小成一小块。藏青只用来写字，不再做色块。</p>
+        <div class="swatches">
+          <div class="sw"><i style="background:#f5f3ee"></i>米白</div>
+          <div class="sw"><i style="background:#e3bf62"></i>淡芥末</div>
+          <div class="sw"><i style="background:#9fcbc1"></i>淡青</div>
+          <div class="sw"><i style="background:#232a5c"></i>藏青</div>
+        </div>
+      </div>
+      <dl class="specs">
+        <dt>比 C 轻在哪</dt><dd>大封面变成 34px 小印章；年份色条变成短线；标题字重从 700 降到 500；油墨饱和度降低</dd>
+        <dt>字体</dt><dd>Jost 500 做标题，正文中文用系统黑体</dd>
+        <dt>暗色模式</dt><dd>藏青做底，米白写字，两种淡色印章不用改</dd>
+      </dl>
+    </div>
+    <div class="mocks">
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>lutaonan.com</span></div>
+          <div class="screen lite C2">
+            <nav><span class="dots"><i style="background:#e3bf62;border-radius:50%"></i><i style="background:#9fcbc1"></i>&nbsp;Randy Lu</span><span>Writing&nbsp;&nbsp;About&nbsp;&nbsp;RSS</span></nav>
+            <div class="top">
+              <div><h1>Randy Lu</h1><div class="tag">Product Engineer，写作者。记录关于生活、技术与阅读的思考。</div></div>
+              <img src="c2-hero.jpg" alt="两本书叠放，上面一个小圆">
+            </div>
+            <div class="yr">2026</div>
+            <ul id="list26"></ul>
+            <div class="yr t">2025</div>
+            <ul id="list25"></ul>
+          </div>
+        </div>
+        <div class="cap">首页 · 小印章由代码按 slug 生成</div>
+      </div>
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>/blog/apple-notes-and-para</span></div>
+          <div class="screen lite C2 post">
+            <div class="mark" data-slug="apple-notes-and-para"></div>
+            <h3>我如何使用 Apple Notes 做笔记</h3>
+            <div class="meta">2025.02.09 · 8 分钟</div>
+            <p>用过 Notion、Obsidian、Logseq 之后，我最后回到了 Apple Notes。</p>
+            <h4>PARA 是骨架</h4>
+            <p>文件夹只有四个：Projects、Areas、Resources、Archives。</p>
+          </div>
+        </div>
+        <div class="cap">文章页（正文为示意）</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="round"><h2>第一轮</h2><p>原始三个方向，留作对照</p></div>
+
+  <!-- A -->
+  <section class="proposal" id="a">
+    <div class="p-head">
+      <div>
+        <div class="eyebrow">方案 A</div>
+        <h2>油墨小报</h2>
+        <p>把博客当成一份自己印的 zine。奶油色纸，蓝和荧光粉两种油墨叠印，标题字故意套不准。最热闹、最有“手作出版物”感，也最接近 riso 最常见的样子。正好呼应你写过的《我的地下出版物》。</p>
+        <div class="swatches">
+          <div class="sw"><i style="background:#f6ecd8"></i>纸</div>
+          <div class="sw"><i style="background:#2f7fc1"></i>Riso Blue</div>
+          <div class="sw hl"><i style="background:#ff3d9a"></i>荧光粉</div>
+          <div class="sw"><i style="background:#222"></i>黑</div>
+        </div>
+      </div>
+      <dl class="specs">
+        <dt>字体</dt><dd>Archivo Black 做刊头和年份章，正文中文用系统黑体，文章标题用思源宋体</dd>
+        <dt>高亮色</dt><dd>荧光粉：套色阴影、最新一篇文章的荧光笔划线、hover</dd>
+        <dt>插图</dt><dd>首页一张刊头大图；文章页不配图，靠排版和色块撑</dd>
+        <dt>暗色模式</dt><dd>较难：荧光粉在深底上会刺眼，建议只做浅色</dd>
+        <dt>风险</dt><dd>长文阅读时，叠印效果需要克制，只用在标题和装饰上</dd>
+      </dl>
+    </div>
+    <div class="mocks">
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>lutaonan.com</span></div>
+          <div class="screen A">
+            <nav><span>Randy's Blog</span><span><span>Writing</span><span>About</span><span>RSS</span></span></nav>
+            <div class="mast">RANDY LU</div>
+            <div class="tag">Product Engineer，写作者。记录关于生活、技术与阅读的思考。</div>
+            <div class="hero"><img src="a-zine.jpg" alt="翻开的书，背后升起粉色半圆"></div>
+            <span class="yr">2026</span>
+            <ul><li><b>高考随想</b><time>06.10</time></li></ul>
+            <span class="yr">2025</span>
+            <ul>
+              <li><b>让 AI 戴着镣铐跳舞</b><time>12.27</time></li>
+              <li><span>在 Claude Code 中使用 GLM 4.6 的体验</span><time>10.08</time></li>
+              <li><span>现代浏览器插件开发指南</span><time>04.09</time></li>
+              <li><span>我们高估了智力的重要性</span><time>04.01</time></li>
+            </ul>
+          </div>
+        </div>
+        <div class="cap">首页</div>
+      </div>
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>/blog/ai-writing</span></div>
+          <div class="screen A post">
+            <div class="meta">2024.10.09 · 6 MIN</div>
+            <h3>AI 和写作</h3>
+            <p>我从来不让 AI 帮我写文章。不是因为它写得不好，而是因为写作对我来说本身就是思考的过程。</p>
+            <blockquote>写下来的东西，才是真正想清楚的东西。</blockquote>
+            <p>如果把这个过程外包出去，我得到的只是一篇文章，失去的却是那次思考。</p>
+          </div>
+        </div>
+        <div class="cap">文章页（正文为示意）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="proposal" id="b">
+    <div class="p-head">
+      <div>
+        <div class="eyebrow">方案 B</div>
+        <h2>深夜台灯</h2>
+        <p>深色纸上的三色版画，和 RanDJ 是同一家族：近黑、奶油、暗锈红、暖灰。安静、夜读感强。整个站只在“正在读的那一篇”上点亮一盏橙色台灯，就像 RanDJ 里只有 ON AIR 亮起时才出现亮橙。</p>
+        <div class="swatches">
+          <div class="sw"><i style="background:#15161a"></i>夜</div>
+          <div class="sw"><i style="background:#efe6d2"></i>奶油</div>
+          <div class="sw"><i style="background:#a4462b"></i>锈红</div>
+          <div class="sw"><i style="background:#8f877a"></i>暖灰</div>
+          <div class="sw hl"><i style="background:#ff8a3d"></i>灯光</div>
+        </div>
+      </div>
+      <dl class="specs">
+        <dt>字体</dt><dd>思源宋体做标题和正文，IBM Plex Mono 做日期和标签</dd>
+        <dt>高亮色</dt><dd>灯光橙：只出现在最新文章、文章页顶部的光晕、首字</dd>
+        <dt>插图</dt><dd>首页一张台灯主图；可再做“灯灭 / 灯亮”两态，进入文章时交叉淡入</dd>
+        <dt>暗色模式</dt><dd>本身就是深色；浅色模式可把纸翻成奶油底、油墨变近黑</dd>
+        <dt>风险</dt><dd>深底长文阅读对部分读者偏累，正文字号和行高要放宽</dd>
+      </dl>
+    </div>
+    <div class="mocks">
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>lutaonan.com</span></div>
+          <div class="screen B">
+            <nav><span>RANDY LU</span><span>WRITING · ABOUT · RSS</span></nav>
+            <div class="hero"><img src="b-night.jpg" alt="台灯照亮一张白纸"></div>
+            <h1>Randy Lu</h1>
+            <div class="tag">Product Engineer，写作者。记录关于生活、技术与阅读的思考。</div>
+            <div class="lbl">— WRITING / 64</div>
+            <ul>
+              <li><time>2026.06.10</time><b>高考随想</b></li>
+              <li><time>2025.12.27</time><span>让 AI 戴着镣铐跳舞</span></li>
+              <li><time>2025.10.08</time><span>在 Claude Code 中使用 GLM 4.6 的体验</span></li>
+              <li><time>2025.04.09</time><span>现代浏览器插件开发指南</span></li>
+              <li><time>2024.12.28</time><span>2024: 在夜海中观望浪潮</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="cap">首页</div>
+      </div>
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>/blog/glm-with-claude-code</span></div>
+          <div class="screen B post">
+            <div class="lit"></div>
+            <h3>在 Claude Code 中使用 GLM 4.6 的体验</h3>
+            <div class="meta">2025.10.08 · 5 MIN READ</div>
+            <p>最近把 <code>ANTHROPIC_BASE_URL</code> 指向了 GLM，用了两周，记录一下真实的感受。</p>
+            <p>先说结论：日常的小改动够用，大的重构还是会换回去。</p>
+          </div>
+        </div>
+        <div class="cap">文章页（正文为示意）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="proposal" id="c">
+    <div class="p-head">
+      <div>
+        <div class="eyebrow">方案 C</div>
+        <h2>包豪斯书架</h2>
+        <p>浅色、克制、系统化。米白纸，芥末黄、褪色青、深藏青三色。重点是每篇文章都有一张“封面”：用文章 slug 算出形状和颜色，代码直接画出带套色偏移和颗粒的 riso 小图，64 篇不用一张张生成，也永远风格统一。首页像一面书架。</p>
+        <div class="swatches">
+          <div class="sw"><i style="background:#f0ede6"></i>米白</div>
+          <div class="sw"><i style="background:#d6a531"></i>芥末</div>
+          <div class="sw"><i style="background:#79b8ab"></i>褪色青</div>
+          <div class="sw hl"><i style="background:#1d2257"></i>藏青</div>
+        </div>
+      </div>
+      <dl class="specs">
+        <dt>字体</dt><dd>Jost（类 Futura 的几何无衬线）做标题，正文中文用系统黑体</dd>
+        <dt>高亮色</dt><dd>不另设亮色；靠藏青大面积色块做重点，最安静</dd>
+        <dt>插图</dt><dd>首页一张主图（AI 生成）；每篇文章封面由 slug 程序化生成，重要文章可再用 AI 图替换</dd>
+        <dt>暗色模式</dt><dd>容易：藏青做底，米白做油墨，芥末和青色不变</dd>
+        <dt>风险</dt><dd>程序化封面需要调一轮规则，避免形状组合太重复</dd>
+      </dl>
+    </div>
+    <div class="mocks">
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>lutaonan.com</span></div>
+          <div class="screen C">
+            <nav><span class="logo"><i style="background:#d6a531;border-radius:50%"></i><i style="background:#79b8ab"></i><i style="background:#1d2257"></i>&nbsp;Randy Lu</span><span>Writing&nbsp;&nbsp;About&nbsp;&nbsp;RSS</span></nav>
+            <div class="top">
+              <div><h1>Randy<br>Lu</h1><div class="tag">Product Engineer，写作者。记录关于生活、技术与阅读的思考。</div></div>
+              <img src="c-bauhaus.jpg" alt="三本书叠在一起，上方一个圆">
+            </div>
+            <div class="yearbar"><span style="background:#1d2257">2026</span><span style="background:#79b8ab">2025</span><span style="background:#d6a531">2024</span><span style="background:#1d2257;opacity:.6">2023</span></div>
+            <div class="grid" id="shelf"></div>
+          </div>
+        </div>
+        <div class="cap">首页 · 封面均为代码按 slug 生成</div>
+      </div>
+      <div>
+        <div class="frame"><div class="bar"><i></i><i></i><i></i><span>/blog/apple-notes-and-para</span></div>
+          <div class="screen C post">
+            <div class="cover" data-slug="apple-notes-and-para"></div>
+            <h3>我如何使用 Apple Notes 做笔记</h3>
+            <div class="meta"><i></i>2025.02.09 · 8 分钟</div>
+            <p>用过 Notion、Obsidian、Logseq 之后，我最后回到了 Apple Notes。</p>
+            <h4>PARA 是骨架</h4>
+            <p>文件夹只有四个：Projects、Areas、Resources、Archives。</p>
+          </div>
+        </div>
+        <div class="cap">文章页（正文为示意）</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="proposal">
+    <div>
+      <div class="eyebrow">三个方案通用</div>
+      <h2 style="font-family:var(--display);font-size:26px;margin:6px 0 16px">落到 Astro 里的做法</h2>
+    </div>
+    <div class="tech">
+      <div><h3>纸纹颗粒</h3><p>一个 <code>feTurbulence</code> 的 SVG data URI，用 <code>body::after</code> 全屏覆盖，<code>mix-blend-mode: multiply</code>，不占请求。</p></div>
+      <div><h3>套色偏移</h3><p>标题用第二种油墨做 1–3px 的 <code>text-shadow</code>；色块用 <code>box-shadow</code>。叠印处用 <code>multiply</code> 自然变暗。</p></div>
+      <div><h3>插图融进纸面</h3><p>主图底色等于页面纸色，边缘用 <code>mask-image</code> 渐隐，看不到图片边框。约 1000px JPEG，颗粒压缩后保留得很好。</p></div>
+      <div><h3>改动范围</h3><p>主要是 <code>global.css</code> 的色板与 <code>.prose-blog</code>、<code>index.astro</code> 的布局；方案 C 额外加一个封面组件。</p></div>
+    </div>
+    <div class="rec">
+      <h3>当前方向：B′ 平铺</h3>
+      <p>见页面顶部。剩下的文章按同样的方法逐篇读内容、生成配图；以后写新文章时，也用同样的提示词和参考图补一张。</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  const P = { off: '#f0ede6', m: '#d6a531', t: '#79b8ab', n: '#1d2257' };
+  const inks = [P.m, P.t, P.n];
+  function hash(s) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+  function rng(seed) { let a = seed; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  function shape(kind, r, c) {
+    const x = 20 + r() * 50, y = 15 + r() * 35;
+    if (kind === 0) return `<circle cx="${x + 15}" cy="${y + 12}" r="${12 + r() * 14}" fill="${c}"/>`;
+    if (kind === 1) return `<rect x="${x - 10}" y="${y + 10}" width="${40 + r() * 30}" height="${8 + r() * 8}" fill="${c}"/>`;
+    if (kind === 2) { const w = 12 + r() * 8; return `<rect x="${x}" y="${y - 5}" width="${w}" height="${30 + r() * 20}" rx="${w / 2}" fill="${c}"/>`; }
+    const rr = 14 + r() * 12; return `<path d="M${x} ${y + 25} a${rr} ${rr} 0 0 1 ${rr * 2} 0 z" fill="${c}"/>`;
+  }
+  function cover(slug, vb) {
+    const r = rng(hash(slug)), n = 2 + Math.floor(r() * 2), id = 'g' + hash(slug);
+    let layers = '';
+    const order = [...inks].sort(() => r() - .5);
+    for (let i = 0; i < n; i++) {
+      const s = shape(Math.floor(r() * 4), r, order[i % 3]);
+      const off = order[(i + 1) % 3];
+      layers += `<g style="mix-blend-mode:multiply" opacity=".9" transform="translate(1.2 .8)">${s.replace(/fill="[^"]+"/, `fill="${off}"`)}</g><g style="mix-blend-mode:multiply">${s}</g>`;
+    }
+    return `<svg viewBox="${vb}" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><filter id="${id}"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" seed="${hash(slug) % 99}"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -.9 .55"/><feComposite in2="SourceGraphic" operator="in"/></filter><rect width="120" height="90" fill="${P.off}"/><g style="isolation:isolate">${layers}</g><rect width="120" height="90" filter="url(#${id})" opacity=".55"/></svg>`;
+  }
+  const posts = [
+    ['gaokao', '高考随想', '2026.06.10'],
+    ['ai-coding-principle', '让 AI 戴着镣铐跳舞', '2025.12.27'],
+    ['glm-with-claude-code', '在 Claude Code 中使用 GLM 4.6 的体验', '2025.10.08'],
+    ['browser-extension-development-guide', '现代浏览器插件开发指南', '2025.04.09'],
+    ['think-deeper', '我们高估了智力的重要性', '2025.04.01'],
+    ['2024-summary', '2024: 在夜海中观望浪潮', '2024.12.28'],
+  ];
+  document.getElementById('shelf').innerHTML = posts.map(([s, t, d]) => `<div class="card">${cover(s, '0 0 120 90')}<b>${t}</b><time>${d}</time></div>`).join('');
+  document.querySelectorAll('.cover[data-slug]').forEach(el => { el.innerHTML = cover(el.dataset.slug, '0 15 120 60'); });
+
+  // 轻量版小印章：淡色、1–2 个形状、无颗粒滤镜
+  const L = { off: '#f5f3ee', inks: ['#e3bf62', '#9fcbc1', '#232a5c'] };
+  function stamp(slug) {
+    const r = rng(hash(slug + '~')), n = 1 + (r() > .55 ? 1 : 0);
+    let g = '';
+    for (let i = 0; i < n; i++) {
+      const c = L.inks[i === 1 && r() > .6 ? 2 : Math.floor(r() * 2)];
+      const o = L.inks[(L.inks.indexOf(c) + 1) % 2];
+      const s = shape(Math.floor(r() * 4), r, c);
+      g += `<g transform="translate(1.6 1)" opacity=".7">${s.replace(/fill="[^"]+"/, `fill="${o}"`)}</g>${s}`;
+    }
+    return `<svg viewBox="10 5 100 80" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"><rect x="10" y="5" width="100" height="80" fill="${L.off}"/><g style="mix-blend-mode:multiply">${g}</g></svg>`;
+  }
+  const li = ([s, t, d]) => `<li>${stamp(s)}<span>${t}</span><time>${d.slice(5)}</time></li>`;
+  document.getElementById('list26').innerHTML = posts.slice(0, 1).map(li).join('');
+  document.getElementById('list25').innerHTML = posts.slice(1, 5).map(li).join('');
+  document.querySelectorAll('.mark[data-slug]').forEach(el => { el.innerHTML = stamp(el.dataset.slug); });
+})();
+</script>
